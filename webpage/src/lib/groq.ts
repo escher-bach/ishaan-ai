@@ -15,6 +15,7 @@ export async function summarizeText(text: string): Promise<string> {
     }
     
     const data = await response.json();
+    console.log(data.summary)
     return data.summary;
   } catch (error) {
     console.error('Error summarizing text:', error);

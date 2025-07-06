@@ -10,7 +10,7 @@ const groq = new Groq({
 });
 
 // Define model to use
-const MODEL_NAME = "llama-3.3-70b-versatile";
+const MODEL_NAME = "deepseek-r1-distill-llama-70b";
 
 // Text summarization function
 export async function summarizeText(text: string): Promise<string> {
@@ -182,12 +182,13 @@ export async function getSuggestedResponses(
         },
         {
           role: "user",
-          content: `Based on this message, generate 4 brief suggested responses that I might want to use (max 8 words each):\n\n${context}`,
+          content: `Based on this message, generate 4 brief suggested responses that I might want to use (max 20 words each):\n\n${context}`,
         },
       ],
     });
 
     const content = response.choices[0].message.content || "";
+    console.log(content)
     let suggestions: string[] = [];
 
     try {

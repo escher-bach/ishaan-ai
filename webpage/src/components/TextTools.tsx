@@ -55,6 +55,7 @@ export default function TextTools({ isActive }: TextToolsProps) {
 
   // Handle text processing actions
   const handleSummarize = () => {
+    console.log("handle summarize")
     if (inputText.trim()) {
       summarizeMutation.mutate(inputText);
     }
@@ -195,7 +196,7 @@ export default function TextTools({ isActive }: TextToolsProps) {
           <div className="flex flex-wrap gap-3 mt-5">
             <button
               id="summarize-text"
-              className="flex items-center px-5 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition"
+              className="flex items-center px-5 py-3 bg-green-600 text-white rounded-xl hover:bg-green-800 transition hover:cursor-pointer"
               onClick={handleSummarize}
               disabled={summarizeMutation.isPending || !inputText.trim()}
             >

@@ -9,7 +9,6 @@ import MobileAccessibilityBar from '../components/MobileAccessibilityBar';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('text-tools');
-  
   return (
     <>
       <Header />

@@ -2,26 +2,8 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import serverless from "serverless-http";
+import { summarizeText, simplifyText, correctGrammar, translateText, getChatResponse, getSuggestedResponses } from "./groq";
 
-// ---- Mocked GROQ utility functions (replace with actual logic) ----
-async function summarizeText(text: string) {
-  return `Summary: ${text}`;
-}
-async function simplifyText(text: string) {
-  return `Simplified: ${text}`;
-}
-async function correctGrammar(text: string) {
-  return `Corrected: ${text}`;
-}
-async function translateText(text: string, _source: string, target: string) {
-  return `Translated (${target}): ${text}`;
-}
-async function getChatResponse(message: string) {
-  return `Response to: ${message}`;
-}
-async function getSuggestedResponses(context: string) {
-  return [`Suggestion for: ${context}`];
-}
 const storage = {
   async saveUserPreferences(userId: string, prefs: any) {
     return { userId, ...prefs };
@@ -42,7 +24,8 @@ app.post("/api/summarize", async (req: Request, res: Response) => {
   const { text } = req.body;
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   try {
-    const summary = await summarizeText(text);
+    const answer = await summarizeText(text);
+    const summary = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     res.json({ summary });
   } catch (err) {
     res.status(500).json({ message: "Error summarizing", error: (err as Error).message });
@@ -53,7 +36,8 @@ app.post("/api/simplify", async (req: Request, res: Response) => {
   const { text } = req.body;
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   try {
-    const simplifiedText = await simplifyText(text);
+    const answer = await simplifyText(text);
+    const simplifiedText = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     res.json({ simplifiedText });
   } catch (err) {
     res.status(500).json({ message: "Error simplifying", error: (err as Error).message });
@@ -64,7 +48,8 @@ app.post("/api/correct-grammar", async (req: Request, res: Response) => {
   const { text } = req.body;
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   try {
-    const correctedText = await correctGrammar(text);
+    const answer = await correctGrammar(text);
+    const correctedText = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     res.json({ correctedText });
   } catch (err) {
     res.status(500).json({ message: "Error correcting grammar", error: (err as Error).message });
@@ -76,7 +61,8 @@ app.post("/api/translate", async (req: Request, res: Response) => {
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   if (!targetLanguage) return res.status(400).json({ message: "Target language is required" });
   try {
-    const translatedText = await translateText(text, sourceLanguage, targetLanguage);
+    const answer = await translateText(text, sourceLanguage, targetLanguage);
+    const translatedText = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     res.json({ translatedText });
   } catch (err) {
     res.status(500).json({ message: "Error translating", error: (err as Error).message });
@@ -87,7 +73,8 @@ app.post("/api/chat", async (req: Request, res: Response) => {
   const { message } = req.body;
   if (!message || typeof message !== "string") return res.status(400).json({ message: "Message is required" });
   try {
-    const response = await getChatResponse(message);
+    const answer = await getChatResponse(message);
+    const response = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     res.json({ response });
   } catch (err) {
     res.status(500).json({ message: "Error in chat", error: (err as Error).message });
@@ -98,7 +85,8 @@ app.post("/api/suggested-responses", async (req: Request, res: Response) => {
   const { context } = req.body;
   if (!context || typeof context !== "string") return res.status(400).json({ message: "Context is required" });
   try {
-    const suggestions = await getSuggestedResponses(context);
+    const answer = await getSuggestedResponses(context);
+    const suggestions = answer.map((a) => a.replace(/<think>[\s\S]*?<\/think>\n\n/g, ''));
     res.json({ suggestions });
   } catch (err) {
     res.status(500).json({ message: "Error getting suggestions", error: (err as Error).message });
