@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Accessibility Tools",
+  "version": "1.0",
+  "description": "Tools for dyslexia and accessibility.",
+  "permissions": ["activeTab", "tabs"],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.jpg"
+  },
+  "icons": {
+    "16": "icon.jpg",
+    "48": "icon.jpg",
+    "128": "icon.jpg"
+  },
+  "web_accessible_resources": [
+    "scripts.js"
+  ]
+}
