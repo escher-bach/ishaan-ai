@@ -178,7 +178,7 @@ export async function getSuggestedResponses(
         {
           role: "system",
           content:
-            "You are an assistant that generates helpful suggested responses for users with dyslexia and reading difficulties. Generate 4 short, simple response options that the user might want to use in a conversation. Format your response as a JSON array with 4 suggestion strings.",
+            "You are an assistant that generates helpful suggested responses for users with dyslexia and reading difficulties. Generate 4 short, simple response options that the user might want to use in a conversation. Format your response as a JSON array wrapped in '[]' brackets with 4 suggestion strings.",
         },
         {
           role: "user",
@@ -187,7 +187,8 @@ export async function getSuggestedResponses(
       ],
     });
 
-    const content = response.choices[0].message.content || "";
+    const answer = response.choices[0].message.content || "";
+    const content = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     console.log(content)
     let suggestions: string[] = [];
 

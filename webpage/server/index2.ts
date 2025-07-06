@@ -85,8 +85,7 @@ app.post("/api/suggested-responses", async (req: Request, res: Response) => {
   const { context } = req.body;
   if (!context || typeof context !== "string") return res.status(400).json({ message: "Context is required" });
   try {
-    const answer = await getSuggestedResponses(context);
-    const suggestions = answer.map((a) => a.replace(/<think>[\s\S]*?<\/think>\n\n/g, ''));
+    const suggestions = await getSuggestedResponses(context);
     res.json({ suggestions });
   } catch (err) {
     res.status(500).json({ message: "Error getting suggestions", error: (err as Error).message });
