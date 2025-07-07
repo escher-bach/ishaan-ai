@@ -28,7 +28,7 @@ app.post("/api/summarize", async (req: Request, res: Response) => {
     const summary = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
     res.json({ summary });
   } catch (err) {
-    res.status(500).json({ message: "Error summarizing", error: (err as Error).message });
+    res.status(500).json({ message: "Error summarizing", error: err });
   }
 });
 
