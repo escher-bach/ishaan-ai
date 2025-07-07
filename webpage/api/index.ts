@@ -22,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 // ---- Routes ----
 app.post("/api/summarize", async (req: Request, res: Response) => {
   const { text } = req.body;
+  console.log('Summarize endpoint hit');
+  console.log('Request body:', req.body);
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   try {
     const answer = await summarizeText(text);
