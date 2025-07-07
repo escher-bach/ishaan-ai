@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 });
 
 // ---- Routes ----
-app.post("/api/summarize", async (req: Request, res: Response) => {
+app.post("/summarize", async (req: Request, res: Response) => {
   const { text } = req.body;
   console.log('Summarize endpoint hit');
   console.log('Request body:', req.body);
