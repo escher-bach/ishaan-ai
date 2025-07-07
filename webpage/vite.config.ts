@@ -35,7 +35,7 @@ export default async () =>
       },
     },
     build: {
-      outDir: 'dist/public', 
+      outDir: 'dist', 
       emptyOutDir: true,
     },
   })
