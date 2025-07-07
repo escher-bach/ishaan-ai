@@ -1,31 +1,34 @@
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-// Initialize GROQ client with API key
-const groq = new Groq({
-  apiKey:
-    process.env.GROQ_API_KEY
-});
+// Runtime-safe Groq client
+function getGroqClient() {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    throw new Error("GROQ_API_KEY is not defined in environment variables.");
+  }
+  return new Groq({ apiKey });
+}
 
-// Define model to use
 const MODEL_NAME = "deepseek-r1-distill-llama-70b";
 
-// Text summarization function
+// Summarize
 export async function summarizeText(text: string): Promise<string> {
   try {
+    const groq = getGroqClient();
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are an assistant that summarizes text for people with dyslexia and other reading difficulties. Create clear, concise summaries that are easy to read and understand. Use simple language and short sentences.",
+            "You are an assistant that summarizes text for people with dyslexia and other reading difficulties. Use clear, simple language.",
         },
         {
           role: "user",
-          content: `Please summarize the following text in a way that's easy to read for someone with dyslexia:\n\n${text}`,
+          content: `Please summarize the following text:\n\n${text}`,
         },
       ],
     });
@@ -37,20 +40,21 @@ export async function summarizeText(text: string): Promise<string> {
   }
 }
 
-// Text simplification function
+// Simplify
 export async function simplifyText(text: string): Promise<string> {
   try {
+    const groq = getGroqClient();
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are an assistant that simplifies complex text for people with reading difficulties. Your task is to rewrite text using simpler words, shorter sentences, and clearer structure. Make the text more accessible while preserving the core meaning.",
+            "Simplify complex text into shorter, easier sentences for people with reading difficulties.",
         },
         {
           role: "user",
-          content: `Please simplify the following text to make it easier to read and understand:\n\n${text}`,
+          content: `Please simplify this text:\n\n${text}`,
         },
       ],
     });
@@ -62,20 +66,21 @@ export async function simplifyText(text: string): Promise<string> {
   }
 }
 
-// Grammar correction function
+// Correct Grammar
 export async function correctGrammar(text: string): Promise<string> {
   try {
+    const groq = getGroqClient();
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are an assistant that helps people with dyslexia and writing difficulties correct their grammar and spelling. Fix grammatical errors, spelling mistakes, and improve readability while maintaining the original meaning.",
+            "Correct grammar and spelling while keeping the original meaning clear and simple.",
         },
         {
           role: "user",
-          content: `Please correct the grammar and spelling in this text:\n\n${text}`,
+          content: `Correct this text:\n\n${text}`,
         },
       ],
     });
@@ -87,48 +92,35 @@ export async function correctGrammar(text: string): Promise<string> {
   }
 }
 
-// Translation and transliteration function
+// Translate
 export async function translateText(
   text: string,
   sourceLanguage: string = "auto",
   targetLanguage: string,
 ): Promise<string> {
   try {
-    let systemPrompt =
-      "You are a translation assistant that helps people convert text between languages.";
-    let userPrompt = "";
+    const groq = getGroqClient();
+
+    let systemPrompt = "Translate text between languages.";
+    let userPrompt = `Translate this text from ${sourceLanguage} to ${targetLanguage}:\n\n${text}`;
 
     if (sourceLanguage === "hi-t" && targetLanguage === "hi") {
-      // Hinglish to Hindi transliteration
-      systemPrompt =
-        "You are an assistant that converts Hinglish (Roman script Hindi) into proper Hindi script.";
-      userPrompt = `Please convert this Hinglish text to proper Hindi script:\n\n${text}`;
+      systemPrompt = "Convert Hinglish to proper Hindi script.";
+      userPrompt = `Convert this Hinglish text to Hindi:\n\n${text}`;
     } else if (sourceLanguage === "hi-t" && targetLanguage === "en") {
-      // Hinglish to English translation
-      systemPrompt =
-        "You are an assistant that translates Hinglish (Hindi written in Roman script) into proper English.";
-      userPrompt = `Please translate this Hinglish text to English:\n\n${text}`;
+      systemPrompt = "Translate Hinglish (Roman script Hindi) to English.";
+      userPrompt = `Translate this Hinglish text to English:\n\n${text}`;
     } else if (targetLanguage === "simple") {
-      // Any language to simple English
       systemPrompt =
-        "You are an assistant that translates text into very simple, easy-to-understand English for people with reading difficulties.";
-      userPrompt = `Please translate this text into very simple English:\n\n${text}`;
-    } else {
-      // Standard translation
-      userPrompt = `Please translate this text from ${sourceLanguage === "auto" ? "the detected language" : sourceLanguage} to ${targetLanguage}:\n\n${text}`;
+        "Translate this to very simple English for people with reading difficulties.";
+      userPrompt = `Simplify and translate this text:\n\n${text}`;
     }
 
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        {
-          role: "user",
-          content: userPrompt,
-        },
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
       ],
     });
 
@@ -139,16 +131,17 @@ export async function translateText(
   }
 }
 
-// Chat response function
+// Chat response
 export async function getChatResponse(message: string): Promise<string> {
   try {
+    const groq = getGroqClient();
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are a helpful assistant for people with dyslexia and reading difficulties. Use simple language, short sentences, and clear explanations. Avoid complex words when simpler alternatives exist. Be patient, supportive, and understanding.",
+            "You are a helpful assistant. Use simple, supportive language. Avoid complex words.",
         },
         {
           role: "user",
@@ -157,90 +150,54 @@ export async function getChatResponse(message: string): Promise<string> {
       ],
     });
 
-    return (
-      response.choices[0].message.content ||
-      "I'm sorry, I couldn't generate a response."
-    );
+    return response.choices[0].message.content || "No response generated.";
   } catch (error) {
     console.error("Error getting chat response:", error);
     throw new Error(`Failed to get chat response: ${(error as Error).message}`);
   }
 }
 
-// Get suggested responses function
-export async function getSuggestedResponses(
-  context: string,
-): Promise<string[]> {
+// Suggested responses
+export async function getSuggestedResponses(context: string): Promise<string[]> {
   try {
+    const groq = getGroqClient();
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are an assistant that generates helpful suggested responses for users with dyslexia and reading difficulties. Generate 4 short, simple response options that the user might want to use in a conversation. Format your response as a JSON array wrapped in '[]' brackets with 4 suggestion strings.",
+            "Suggest 4 short, clear responses for someone with dyslexia. Return as a JSON array.",
         },
         {
           role: "user",
-          content: `Based on this message, generate 4 brief suggested responses that I might want to use (max 20 words each):\n\n${context}`,
+          content: `Suggest responses for this:\n\n${context}`,
         },
       ],
     });
 
-    const answer = response.choices[0].message.content || "";
-    const content = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
-    console.log(content)
+    const content = response.choices[0].message.content || "";
     let suggestions: string[] = [];
 
+    // Attempt to parse or extract suggestions
     try {
-      // Try to parse as JSON
-      if (content.includes("[") && content.includes("]")) {
-        const jsonContent = content.substring(
-          content.indexOf("["),
-          content.lastIndexOf("]") + 1,
-        );
-        suggestions = JSON.parse(jsonContent);
+      const jsonMatch = content.match(/\[[\s\S]*?\]/);
+      if (jsonMatch) {
+        suggestions = JSON.parse(jsonMatch[0]);
       } else {
-        // If it's not valid JSON, try to extract from text
-        const lines = content
+        suggestions = content
           .split("\n")
-          .filter(
-            (line: string) =>
-              line.trim() && !line.includes("{") && !line.includes("}"),
-          );
-        suggestions = lines.slice(0, 4).map((line: string) => {
-          // Remove numbers, quotes, and other formatting
-          return line.replace(/^[0-9."'\-]*/, "").trim();
-        });
+          .filter(Boolean)
+          .map((line) => line.replace(/^[0-9.\-–\s]+/, "").trim())
+          .slice(0, 4);
       }
-    } catch (e) {
-      // If JSON parsing fails, extract suggestions from text
-      const lines = content.split("\n").filter((line: string) => line.trim());
-      suggestions = lines.slice(0, 4).map((line: string) => {
-        // Remove numbers, quotes, and other formatting
-        return line.replace(/^[0-9."'\-]*/, "").trim();
-      });
+    } catch {
+      suggestions = ["Can you explain this?", "What does this mean?", "Simplify this please.", "I don’t understand."];
     }
 
-    // Fallback if we still don't have suggestions
-    if (suggestions.length === 0) {
-      suggestions = [
-        "Can you explain this simpler?",
-        "What does this word mean?",
-        "Help me write a response",
-        "Summarize this conversation",
-      ];
-    }
-
-    return suggestions.slice(0, 4);
+    return suggestions;
   } catch (error) {
     console.error("Error getting suggested responses:", error);
-    // Return default suggestions on error
-    return [
-      "Can you explain this simpler?",
-      "What does this word mean?",
-      "Help me write a response",
-      "Summarize this conversation",
-    ];
+    return ["Can you explain this?", "What does this mean?", "Simplify this please.", "I don’t understand."];
   }
 }
