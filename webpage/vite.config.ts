@@ -16,9 +16,11 @@ const useCartographer = async () => {
 export default async () =>
   defineConfig({
     server: {
-      proxy: {
-      '/api': 'http://localhost:5000', // Proxy /api requests to your backend
-    },
+      proxy: process.env.NODE_ENV === 'development'
+        ? {
+            '/api': 'http://localhost:5000',
+          }
+        : undefined,
     },
     plugins: [
       react(),
