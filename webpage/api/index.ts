@@ -2,7 +2,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import serverless from "serverless-http";
-import { summarizeText, simplifyText, correctGrammar, translateText, getChatResponse, getSuggestedResponses } from "./groq";
+import { summarizeText, simplifyText, correctGrammar, translateText, getChatResponse, getSuggestedResponses } from "./groq.js";
 
 const storage = {
   async saveUserPreferences(userId: string, prefs: any) {
