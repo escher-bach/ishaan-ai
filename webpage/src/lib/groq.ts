@@ -2,6 +2,7 @@
 
 export async function summarizeText(text: string): Promise<string> {
   try {
+    console.log('GROQ key defined:', Boolean(process.env.GROQ_API_KEY));
     const response = await fetch('/api/summarize', {
       method: 'POST',
       headers: {
