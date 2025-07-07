@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "vite",
-    "dev:server": "nodemon --watch ./api --ext ts,js,json --exec tsx api/index2.ts",
+    "dev:server": "nodemon --watch ./api --ext ts,js,json --exec tsx api/index.ts",
     "build": "vite build && esbuild api/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
