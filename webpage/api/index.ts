@@ -21,18 +21,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  console.log('=== REQUEST DEBUG ===');
-  console.log('Method:', req.method);
-  console.log('URL:', req.url);
-  console.log('Path:', req.path);
-  console.log('Original URL:', req.originalUrl);
-  console.log('Environment VERCEL:', process.env.VERCEL);
-  next();
-});
-
 // ---- Routes ----
-app.post(`${apiPrefix}/summarize`, async (req: Request, res: Response) => {
+app.post("/api/summarize", async (req: Request, res: Response) => {
   const { text } = req.body;
   console.log('Summarize endpoint hit');
   console.log('Request body:', req.body);
@@ -46,7 +36,7 @@ app.post(`${apiPrefix}/summarize`, async (req: Request, res: Response) => {
   }
 });
 
-app.post(`${apiPrefix}/simplify`, async (req: Request, res: Response) => {
+app.post("/api/simplify", async (req: Request, res: Response) => {
   const { text } = req.body;
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   try {
@@ -58,7 +48,7 @@ app.post(`${apiPrefix}/simplify`, async (req: Request, res: Response) => {
   }
 });
 
-app.post(`${apiPrefix}/correct-grammar`, async (req: Request, res: Response) => {
+app.post("/api/correct-grammar", async (req: Request, res: Response) => {
   const { text } = req.body;
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   try {
@@ -70,7 +60,7 @@ app.post(`${apiPrefix}/correct-grammar`, async (req: Request, res: Response) => 
   }
 });
 
-app.post(`${apiPrefix}/translate`, async (req: Request, res: Response) => {
+app.post("/api/translate", async (req: Request, res: Response) => {
   const { text, sourceLanguage, targetLanguage } = req.body;
   if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
   if (!targetLanguage) return res.status(400).json({ message: "Target language is required" });
@@ -83,7 +73,7 @@ app.post(`${apiPrefix}/translate`, async (req: Request, res: Response) => {
   }
 });
 
-app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
+app.post("/api/chat", async (req: Request, res: Response) => {
   const { message } = req.body;
   if (!message || typeof message !== "string") return res.status(400).json({ message: "Message is required" });
   try {
@@ -95,7 +85,7 @@ app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
   }
 });
 
-app.post(`${apiPrefix}/suggested-responses`, async (req: Request, res: Response) => {
+app.post("/api/suggested-responses", async (req: Request, res: Response) => {
   const { context } = req.body;
   if (!context || typeof context !== "string") return res.status(400).json({ message: "Context is required" });
   try {
@@ -106,7 +96,7 @@ app.post(`${apiPrefix}/suggested-responses`, async (req: Request, res: Response)
   }
 });
 
-app.post(`${apiPrefix}/preferences`, async (req: Request, res: Response) => {
+app.post("/api/preferences", async (req: Request, res: Response) => {
   const { userId, ...prefs } = req.body;
   if (!userId) return res.status(400).json({ message: "User ID is required" });
   try {
@@ -117,7 +107,7 @@ app.post(`${apiPrefix}/preferences`, async (req: Request, res: Response) => {
   }
 });
 
-app.get(`${apiPrefix}/preferences/:userId`, async (req: Request, res: Response) => {
+app.get("/api/preferences/:userId", async (req: Request, res: Response) => {
   const { userId } = req.params;
   if (!userId) return res.status(400).json({ message: "User ID is required" });
   try {
