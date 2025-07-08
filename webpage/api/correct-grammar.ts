@@ -12,9 +12,9 @@ export async function POST(req: Request) {
     }
 
     const answer = await correctGrammar(text);
-    const response = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
+    const correctedText = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
 
-    return new Response(JSON.stringify({ response }), {
+    return new Response(JSON.stringify({ correctedText }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

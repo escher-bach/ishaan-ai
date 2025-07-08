@@ -87,8 +87,6 @@ export async function correctGrammar(text: string): Promise<string> {
       ],
     });
 
-    console.log(response.choices[0].message)
-
     return response.choices[0].message.content || "Unable to correct grammar.";
   } catch (error) {
     console.error("Error correcting grammar:", error);
