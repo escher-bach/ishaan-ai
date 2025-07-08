@@ -1,6 +1,6 @@
 // app/api/correct-grammar/route.ts
 
-import { correctGrammar } from '../server/groq';
+import { correctGrammar } from '../server/groq.js';
 
 export async function POST(req: Request) {
   try {

@@ -1,6 +1,6 @@
 // app/api/chat/route.ts
 
-import { getChatResponse } from '../server/groq';
+import { getChatResponse } from '../server/groq.js';
 
 export async function POST(req: Request) {
   try {
