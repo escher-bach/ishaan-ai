@@ -1,14 +1,34 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
+// app/api/suggested-responses/route.ts
+
 import { getSuggestedResponses } from '../server/groq.js';
 
-export default async (req: VercelRequest, res: VercelResponse) => {
-  const { text } = req.body;
-  if (!text || typeof text !== "string") return res.status(400).json({ message: "Text is required" });
-
+export async function POST(req: Request) {
   try {
-    const response = await getSuggestedResponses(text);
-    res.json({ response });
-  } catch (err) {
-    res.status(500).json({ message: "Error getting suggested responses", error: (err as Error).message });
+    const { text } = await req.json();
+
+    if (!text || typeof text !== 'string') {
+      return new Response(JSON.stringify({ message: 'Text is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const suggestions = await getSuggestedResponses(text);
+
+    return new Response(JSON.stringify({ suggestions }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (err: any) {
+    return new Response(
+      JSON.stringify({
+        message: 'Error getting suggested responses',
+        error: err.message,
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
-};
+}
