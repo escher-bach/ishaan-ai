@@ -87,6 +87,8 @@ export async function correctGrammar(text: string): Promise<string> {
       ],
     });
 
+    console.log(response.choices[0].message)
+
     return response.choices[0].message.content || "Unable to correct grammar.";
   } catch (error) {
     console.error("Error correcting grammar:", error);
@@ -137,6 +139,7 @@ export async function translateText(
 export async function getChatResponse(message: string): Promise<string> {
   try {
     const groq = getGroqClient();
+    console.log('GROQ key defined:', Boolean(process.env.GROQ_API_KEY));
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
