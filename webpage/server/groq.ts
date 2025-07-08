@@ -71,6 +71,7 @@ export async function simplifyText(text: string): Promise<string> {
 export async function correctGrammar(text: string): Promise<string> {
   try {
     const groq = getGroqClient();
+    console.log('GROQ key defined:', Boolean(process.env.GROQ_API_KEY));
     const response = await groq.chat.completions.create({
       model: MODEL_NAME,
       messages: [
