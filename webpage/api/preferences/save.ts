@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { storage } from '../../backend/storage'
+import { storage } from '../../server/storage'
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { userId, ...prefs } = req.body;
