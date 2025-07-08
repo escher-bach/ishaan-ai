@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { summarizeText } from '../src/lib/groq.js';
+import { summarizeText } from '../server/groq.js';
 
 console.log("SUMMARIZE ENDPOINT")
 
