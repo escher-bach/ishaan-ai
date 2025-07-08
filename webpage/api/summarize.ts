@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { summarizeText } from '../src/lib/groq';
 
 export default async (req: VercelRequest, res: VercelResponse) => {
+    console.log("SUMMARIZE ENDPOINT")
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ message: 'Method Not Allowed' });

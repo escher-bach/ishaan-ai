@@ -15,13 +15,13 @@ const useCartographer = async () => {
 
 export default async () =>
   defineConfig({
-    // server: {
-    //   proxy: process.env.NODE_ENV === 'development'
-    //     ? {
-    //         '/api': 'http://localhost:5000',
-    //       }
-    //     : undefined,
-    // },
+    server: {
+      proxy: process.env.NODE_ENV === 'development'
+        ? {
+            '/api': 'http://localhost:5000',
+          }
+        : undefined,
+    },
     plugins: [
       react(),
       tailwindcss(),
