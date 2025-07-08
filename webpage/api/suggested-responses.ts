@@ -4,16 +4,16 @@ import { getSuggestedResponses } from '../server/groq.js';
 
 export async function POST(req: Request) {
   try {
-    const { text } = await req.json();
+    const { context } = await req.json();
 
-    if (!text || typeof text !== 'string') {
+    if (!context || typeof context !== 'string') {
       return new Response(JSON.stringify({ message: 'Text is required' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const suggestions = await getSuggestedResponses(text);
+    const suggestions = await getSuggestedResponses(context);
 
     return new Response(JSON.stringify({ suggestions }), {
       status: 200,
