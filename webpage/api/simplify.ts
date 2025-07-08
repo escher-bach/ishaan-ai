@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { simplifyText } from '../src/lib/groq';
+import { simplifyText } from '../server/groq';
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { text } = req.body;

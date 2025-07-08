@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { getChatResponse } from '../src/lib/groq';
+import { getChatResponse } from '../server/groq';
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { text } = req.body;

@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { correctGrammar } from '../src/lib/groq';
+import { correctGrammar } from '../server/groq';
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { text } = req.body;
