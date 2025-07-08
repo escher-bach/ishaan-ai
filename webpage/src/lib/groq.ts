@@ -1,9 +1,12 @@
-// Client-side functions for handling GROQ API requests via our backend
+// src/lib/api.ts
 
+// Determine the base URL depending on the environment
 const baseUrl =
-  process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`   // for Vercel
-    : "";
+  typeof window === "undefined"
+    ? process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`  // SSR on Vercel
+      : ''
+    : ''; // client-side in dev or prod
 
 export async function summarizeText(text: string): Promise<string> {
   try {
@@ -14,13 +17,12 @@ export async function summarizeText(text: string): Promise<string> {
       },
       body: JSON.stringify({ text }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    console.log(data.summary)
     return data.summary;
   } catch (error) {
     console.error('Error summarizing text:', error);
@@ -30,18 +32,18 @@ export async function summarizeText(text: string): Promise<string> {
 
 export async function simplifyText(text: string): Promise<string> {
   try {
-    const response = await fetch('/api/simplify', {
+    const response = await fetch(`${baseUrl}/api/simplify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ text }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data.simplifiedText;
   } catch (error) {
@@ -52,18 +54,18 @@ export async function simplifyText(text: string): Promise<string> {
 
 export async function correctGrammar(text: string): Promise<string> {
   try {
-    const response = await fetch('/api/correct-grammar', {
+    const response = await fetch(`${baseUrl}/api/correct-grammar`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ text }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data.correctedText;
   } catch (error) {
@@ -74,18 +76,18 @@ export async function correctGrammar(text: string): Promise<string> {
 
 export async function translateText(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
   try {
-    const response = await fetch('/api/translate', {
+    const response = await fetch(`${baseUrl}/api/translate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ text, sourceLanguage, targetLanguage }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data.translatedText;
   } catch (error) {
@@ -96,18 +98,18 @@ export async function translateText(text: string, sourceLanguage: string, target
 
 export async function getChatResponse(message: string): Promise<string> {
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch(`${baseUrl}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data.response;
   } catch (error) {
@@ -118,18 +120,18 @@ export async function getChatResponse(message: string): Promise<string> {
 
 export async function getSuggestedResponses(context: string): Promise<string[]> {
   try {
-    const response = await fetch('/api/suggested-responses', {
+    const response = await fetch(`${baseUrl}/api/suggested-responses`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ context }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-    
+
     const data = await response.json();
     return data.suggestions;
   } catch (error) {

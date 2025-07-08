@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { getSuggestedResponses } from '../server/groq';
+import { getSuggestedResponses } from '../server/groq.js';
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   const { text } = req.body;
