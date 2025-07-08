@@ -1,8 +1,13 @@
 // Client-side functions for handling GROQ API requests via our backend
 
+const baseUrl =
+  process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`   // for Vercel
+    : "";
+
 export async function summarizeText(text: string): Promise<string> {
   try {
-    const response = await fetch('/api/summarize', {
+    const response = await fetch(`${baseUrl}/api/summarize`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
