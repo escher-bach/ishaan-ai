@@ -1,23 +1,18 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
-import { summarizeText } from '../src/lib/groq';
+// app/api/summarize/route.ts
+import { summarizeText } from '@/lib/groq';
 
-export default async (req: VercelRequest, res: VercelResponse) => {
-    console.log("SUMMARIZE ENDPOINT")
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
+export async function POST(req: Request) {
+  const { text } = await req.json();
 
-  const { text } = req.body;
   if (!text || typeof text !== "string") {
-    return res.status(400).json({ message: "Text is required" });
+    return new Response(JSON.stringify({ message: "Text is required" }), { status: 400 });
   }
 
   try {
     const answer = await summarizeText(text);
     const summary = answer.replace(/<think>[\s\S]*?<\/think>\n\n/g, '');
-    res.status(200).json({ summary });
+    return new Response(JSON.stringify({ summary }), { status: 200 });
   } catch (err) {
-    res.status(500).json({ message: "Error summarizing", error: (err as Error).message });
+    return new Response(JSON.stringify({ message: "Error", error: (err as Error).message }), { status: 500 });
   }
-};
+}
